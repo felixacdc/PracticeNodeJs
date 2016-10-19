@@ -25,9 +25,30 @@ app.use(allowMethods);
 // POST
 app.post("/api/:coleccion", (req, res, next) => {
     req.collection.insert(req.body, {}, (e, result) => {
-        if(e) return next();
+        if(e) return next(e);
         res.send(result);
     });
+});
+// GET
+app.get("/api/:coleccion", (req, res, next) => {
+    req.collection.find({}, {limit: 10, sort: [['_id', -1]]}).toArray((e, results) => {
+        if(e) return next(e);
+        res.send(results);
+    });
+});
+// GET
+app.get("/api/:coleccion/:id", (req, res, next) => {
+   req.collection.findOne({_id: id(req.params.id)}, (e, result) => {
+       if(e) return next(e);
+        res.send(result);
+   });
+});
+// PUT
+app.put("/api/:coleccion/:id", (req, res, next) => {
+   req.collection.update({_id: id(req.params.id)}, {$set: req.body}, {safe: true, multi: false}, (e, result) => {
+       if(e) return next(e);
+        res.send(result);
+   });
 });
 
 app.listen(port, () => {
