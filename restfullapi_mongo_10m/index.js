@@ -47,8 +47,15 @@ app.get("/api/:coleccion/:id", (req, res, next) => {
 app.put("/api/:coleccion/:id", (req, res, next) => {
    req.collection.update({_id: id(req.params.id)}, {$set: req.body}, {safe: true, multi: false}, (e, result) => {
        if(e) return next(e);
-        res.send(result);
+        res.send((result === 1) ? {resultado: 'ok'} : {resultado: 'ko'});
    });
+});
+// DELETE
+app.delete("/api/:coleccion/:id", (req, res, next) => {
+    req.collection.remove({_id: id(req.params.id)}, (e, result) => {
+        if(e) return next(e);
+        res.send((result === 1) ? {resultado: 'ok'} : {resultado: 'ko'});
+    });
 });
 
 app.listen(port, () => {
